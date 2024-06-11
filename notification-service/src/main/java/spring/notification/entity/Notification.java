@@ -4,22 +4,28 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Entity
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class Notification {
     @Setter(AccessLevel.NONE)
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NonNull
     private Date timestamp;
+
+    @NonNull
     private String message;
+
+    @NonNull
     private NotificationType type;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NonNull
+    @ManyToOne(targetEntity=User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

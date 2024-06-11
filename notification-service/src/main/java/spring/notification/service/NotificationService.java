@@ -13,8 +13,8 @@ import java.util.Optional;
 
 @Service
 public class NotificationService {
-    private NotificationRepository notificationRepository;
-    private UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
     @Autowired
     public NotificationService(NotificationRepository notificationRepository, UserRepository userRepository) {
         this.notificationRepository = notificationRepository;
@@ -23,8 +23,7 @@ public class NotificationService {
     public void createNotification(Long userId, String message) {
         Optional<User> user = this.userRepository.findById(userId);
         if(user.isPresent()) {
-            Notification notification = new Notification();
-            notification.setMessage(new User(userId));
+            Notification notification = new Notification(new Date(), message, NotificationType.ERROR, user.get());
             notificationRepository.save(notification);
         }
     }
