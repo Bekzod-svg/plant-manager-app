@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.context.annotation.EnableMBeanExport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class HydrogenInstallation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,9 +21,20 @@ public class HydrogenInstallation {
     private StatusType status;
     @Embedded
     private Location location;
-    @ManyToOne
+    @OneToOne
     private User owner;
     @ElementCollection
     private List<HistoricalDate> historicalDates;
+
+    public HydrogenInstallation(StatusType status, Location location, User owner){
+        this.status = status;
+        this.location = location;
+        this.owner = owner;
+        this.historicalDates = new ArrayList<>();
+    }
+
+    public HydrogenInstallation(){
+
+    }
 
 }

@@ -31,14 +31,10 @@ public class HydrogenInstallationController {
     }
 
     @PostMapping
-    public HydrogenInstallation createInstallation(@RequestBody Location location, @RequestBody User owner){
-        return plantService.createInstallation(location, owner);
+    public HydrogenInstallation createInstallation(@RequestBody InstallationRequest request){
+        return plantService.createInstallation(request.getLocation(), request.getOwner());
     }
 
-//    @PostMapping
-//    public HydrogenInstallation createInstallation(@RequestBody InstallationRequest request){
-//        return plantService.createInstallation(request.getLocation(), request.getOwner());
-//    }
 
     @PutMapping("/{id}/user")
     public HydrogenInstallation assignUserToInstallation(@PathVariable Long id, @RequestBody User owner){
@@ -46,7 +42,7 @@ public class HydrogenInstallationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HydrogenInstallation> updateInstallation(@PathVariable Long id, HydrogenInstallation installation){
+    public ResponseEntity<HydrogenInstallation> updateInstallation(@PathVariable Long id, @RequestBody HydrogenInstallation installation){
         return plantService.updateInstallation(id, installation);
     }
 
