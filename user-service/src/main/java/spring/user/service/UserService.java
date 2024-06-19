@@ -1,6 +1,5 @@
 package spring.user.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import spring.user.entity.User;
@@ -39,7 +38,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findFirstByUsername(String username) {
+        return userRepository.findFirstByUsername(username);
     }
 }

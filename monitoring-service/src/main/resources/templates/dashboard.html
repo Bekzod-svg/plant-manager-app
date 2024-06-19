@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <div th:if="${actualUser}">
+        Welcome,  <p th:text="${actualUser.username}"></p> !
+    </div>
+    <div th:if="${loginSuccessMessage}" class="alert alert-success">
+        <p th:text="${loginSuccessMessage}"></p>
+    </div>
+</div>
+</body>
+</html>

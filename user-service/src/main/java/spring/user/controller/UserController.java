@@ -2,8 +2,9 @@ package spring.user.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +15,23 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@Slf4j
+@RequestMapping("/user-service")
 public class UserController {
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<User> getAllUsers(HttpServletRequest request) {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/actual-user")
+    public User getActualUser(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return null;
+        }
+        return (User) session.getAttribute("user");
     }
 
     @GetMapping("/{id}")
@@ -47,15 +58,18 @@ public class UserController {
         return ResponseEntity.ok("Deleted");
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user, HttpServletRequest request) {
-        User foundUser = userService.findByUsername(user.getUsername());
-        if (foundUser != null && foundUser.getPassword().equals(user.getPassword())) {
+    @PostMapping(value = "/login")
+    public ResponseEntity<User> login(@RequestParam("username") String username,
+                                      @RequestParam("password") String password,
+                                      HttpServletRequest request) {
+        User foundUser = userService.findFirstByUsername(username);
+        if (foundUser != null && foundUser.getPassword().equals(password)) {
+            log.error(foundUser.getUsername());
             HttpSession session = request.getSession();
             session.setAttribute("user", foundUser);
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok(foundUser);
         }
-        return ResponseEntity.status(401).body("Invalid credentials");
+        return ResponseEntity.status(401).body(null);
     }
 
     @PostMapping("/logout")
