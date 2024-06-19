@@ -10,11 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/installations")
+@RequestMapping("/api/v1/installations")
 @RequiredArgsConstructor
 public class HydrogenInstallationController {
 
@@ -32,7 +33,7 @@ public class HydrogenInstallationController {
 
     @PostMapping
     public HydrogenInstallation createInstallation(@RequestBody InstallationRequest request){
-        return plantService.createInstallation(request.getLocation(), request.getOwner());
+        return plantService.createInstallation(request.getStatus(), request.getLocation(), request.getOwner());
     }
 
 

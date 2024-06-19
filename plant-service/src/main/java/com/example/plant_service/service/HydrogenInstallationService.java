@@ -6,25 +6,30 @@ import com.example.plant_service.repository.HydrogenInstallationRepository;
 import com.example.plant_service.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class HydrogenInstallationService {
     private final HydrogenInstallationRepository plantRepository;
     private final UserRepository userRepository;
-    public HydrogenInstallation createInstallation(Location location, User user){
-        HydrogenInstallation installation = new HydrogenInstallation(StatusType.ACTIVE, location, user);
+    public HydrogenInstallation createInstallation(StatusType status, Location location, User user){
+        StatusType finalStatus = status != null ? status : StatusType.ACTIVE;
+        HydrogenInstallation installation = new HydrogenInstallation(finalStatus, location, user);
         HistoricalDate historicalDate = new HistoricalDate(HistoricalDateType.CREATED, new Date());
 
         installation.getHistoricalDates().add(historicalDate);
         return plantRepository.save(installation);
     }
+
+
 
 //    public HydrogenInstallation createInstallation(InstallationRequest request){
 //        HydrogenInstallation installation = new HydrogenInstallation();
@@ -93,6 +98,22 @@ public class HydrogenInstallationService {
 
     public HydrogenInstallation getInstallation(Long id){
         return plantRepository.findById(id).orElseThrow();
+    }
+
+    public List<HydrogenInstallation> searchInstallations(String query){
+        List<HydrogenInstallation> installations = plantRepository.findAll();
+        return installations.stream().filter(
+                plant ->
+                        plant.getOwner().getName().toLowerCase().contains(query.toLowerCase()) ||
+                        plant.getStatus().toString().toLowerCase().contains(query.toLowerCase()) ||
+                                plant.getLocation().getLatitude().toString().contains(query.toLowerCase()) ||
+                                plant.getLocation().getLongitude().toString().contains(query.toLowerCase())
+        ).collect(Collectors.toList());
+    }
+
+    public List<HydrogenInstallation> getAllInstallationsSorted(String sortField){
+        Sort sort = Sort.by(Sort.Direction.ASC, sortField);
+        return plantRepository.findAll(sort);
     }
 
 
