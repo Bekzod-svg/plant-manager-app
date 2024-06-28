@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"> <!-- Link to local Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="/css/login-registration/login-registration.css">
 </head>
 <body>
 <div class="container">
@@ -20,8 +21,8 @@
             <button type="submit">Login</button>
         </div>
     </form>
-    <div th:if="${registrationSuccessMessage}" class="alert alert-success">
-        <p th:text="${registrationSuccessMessage}"></p>
+    <div th:if="${message}">
+        <p th:text="${message}"></p>
     </div>
     <a class="register-link" href="/registrationPage">Register</a>
 </div>

@@ -3,7 +3,7 @@ package spring.monitoring.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import reactor.core.publisher.Mono;
+import spring.monitoring.entity.HydrogenInstallation;
 import spring.monitoring.entity.User;
 
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -56,31 +59,72 @@ public class MonitoringController {
                 .bodyToMono(User.class)
                 .block();
 
-        redirectAttributes.addFlashAttribute("registrationSuccessMessage", "Registration successful");
+        redirectAttributes.addFlashAttribute("message", "Registration successful");
         return "redirect:/loginPage";
     }
 
     @PostMapping("/login")
     public String login(@RequestParam("username") String username,
                         @RequestParam("password") String password, RedirectAttributes redirectAttributes, Model model) {
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        try {
+            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+            formData.add("username", username);
+            formData.add("password", password);
 
-        // Set username and password
-        formData.add("username", username);
-        formData.add("password", password);
+            User user = webClient.post()
+                    .uri("http://localhost:8085/user-service/login",
+                            uriBuilder -> uriBuilder
+                                    .queryParams(formData).build())
+                    .retrieve()
+                    .bodyToMono(User.class)
+                    .block();
+            if(user == null) {
+                return "redirect:/loginPage";
+            }
+            redirectAttributes.addFlashAttribute("message", "Login successful!");
+            model.addAttribute("actualUser", user);
+            return "redirect:/homepage";
 
-        User user = webClient.post()
-                .uri("http://localhost:8085/user-service/login",
-                        uriBuilder -> uriBuilder
-                                .queryParams(formData).build())
-                .retrieve()
-                .bodyToMono(User.class)
-                .block();
-        if(user == null) {
+        } catch (WebClientResponseException.Unauthorized ex) {
+            redirectAttributes.addFlashAttribute("message", "Unauthorized!");
             return "redirect:/loginPage";
         }
-        redirectAttributes.addFlashAttribute("loginSuccessMessage", "Login successful");
-        model.addAttribute("actualUser", user);
-        return "dashboard";
+    }
+
+    @GetMapping("/homepage")
+    public String homepage(Model model) {
+        return "home";
+    }
+
+    @GetMapping("/logout")
+    public String logout(RedirectAttributes redirectAttributes) {
+        try {
+            webClient.post()
+                    .uri("http://localhost:8085/user-service/logout")
+                    .retrieve()
+                    .onStatus(statusCode -> !HttpStatus.OK.equals(statusCode),
+                            res -> res.bodyToMono(String.class).map(Exception::new))
+                    .bodyToMono(String.class)
+                    .block();
+
+            redirectAttributes.addFlashAttribute("message", "Logout successful!");
+            return "redirect:/loginPage";
+        } catch (Exception ex) {
+            return "redirect:/homepage";
+        }
+    }
+
+    @GetMapping("/indexInstallationPage")
+    public String indexInstallationPage(Model model) {
+
+            HydrogenInstallation[] installations = webClient.post()
+                    .uri("http://localhost:8084/api/v1/installations")
+                    .retrieve()
+                    .bodyToMono(HydrogenInstallation[].class)
+                    .block();
+
+            model.addAttribute("installations", installations);
+            return "installations/index";
+
     }
 }
