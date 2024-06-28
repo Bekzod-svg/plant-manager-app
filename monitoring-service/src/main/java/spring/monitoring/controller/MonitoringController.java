@@ -8,10 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -25,6 +22,7 @@ import java.util.Objects;
 
 @Controller
 @SessionAttributes("actualUser")
+@RequestMapping("/ui")
 @Slf4j
 public class MonitoringController {
 
@@ -35,11 +33,7 @@ public class MonitoringController {
         this.webClient = webClientBuilder.build();
     }
 
-    @GetMapping("/")
-    public String index(Model model) {
-        return "redirect:/loginPage";
-    }
-    @GetMapping("/loginPage")
+    @GetMapping
     public String loginPage(Model model) {
         return "login";
     }
@@ -53,14 +47,14 @@ public class MonitoringController {
     @PostMapping("/register")
     public String register(User user, RedirectAttributes redirectAttributes) {
         User monoUser = webClient.post()
-                .uri("http://localhost:8085/user-service")
+                .uri("http://user-service/api/v1/users")
                 .body(BodyInserters.fromValue(user))
                 .retrieve()
                 .bodyToMono(User.class)
                 .block();
 
         redirectAttributes.addFlashAttribute("message", "Registration successful");
-        return "redirect:/loginPage";
+        return "login";
     }
 
     @PostMapping("/login")
@@ -72,22 +66,22 @@ public class MonitoringController {
             formData.add("password", password);
 
             User user = webClient.post()
-                    .uri("http://localhost:8085/user-service/login",
+                    .uri("http://user-service/api/v1/users/login",
                             uriBuilder -> uriBuilder
                                     .queryParams(formData).build())
                     .retrieve()
                     .bodyToMono(User.class)
                     .block();
             if(user == null) {
-                return "redirect:/loginPage";
+                return "login";
             }
             redirectAttributes.addFlashAttribute("message", "Login successful!");
             model.addAttribute("actualUser", user);
-            return "redirect:/homepage";
+            return "home";
 
         } catch (WebClientResponseException.Unauthorized ex) {
             redirectAttributes.addFlashAttribute("message", "Unauthorized!");
-            return "redirect:/loginPage";
+            return "login";
         }
     }
 
@@ -100,7 +94,7 @@ public class MonitoringController {
     public String logout(RedirectAttributes redirectAttributes) {
         try {
             webClient.post()
-                    .uri("http://localhost:8085/user-service/logout")
+                    .uri("http://user-service/api/v1/users/logout")
                     .retrieve()
                     .onStatus(statusCode -> !HttpStatus.OK.equals(statusCode),
                             res -> res.bodyToMono(String.class).map(Exception::new))
@@ -108,23 +102,22 @@ public class MonitoringController {
                     .block();
 
             redirectAttributes.addFlashAttribute("message", "Logout successful!");
-            return "redirect:/loginPage";
+            return "login";
         } catch (Exception ex) {
-            return "redirect:/homepage";
+            return "home";
         }
     }
 
     @GetMapping("/indexInstallationPage")
-    public String indexInstallationPage(Model model) {
+    public HydrogenInstallation[] indexInstallationPage(Model model) {
 
-            HydrogenInstallation[] installations = webClient.post()
-                    .uri("http://localhost:8084/api/v1/installations")
+            HydrogenInstallation[] installations = webClient.get()
+                    .uri("http://plant-service/api/v1/installations")
                     .retrieve()
                     .bodyToMono(HydrogenInstallation[].class)
                     .block();
 
             model.addAttribute("installations", installations);
-            return "installations/index";
-
+            return installations;
     }
 }

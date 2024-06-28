@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <h1>Login</h1>
-    <form th:action="@{/login}" method="post">
+    <form th:action="@{/ui/login}" method="post">
         <div>
             <label for="username">Username:</label>
             <input type="text" id="username" name="username"/>
@@ -24,7 +24,7 @@
     <div th:if="${message}">
         <p th:text="${message}"></p>
     </div>
-    <a class="register-link" href="/registrationPage">Register</a>
+    <a class="register-link" href="/ui/registrationPage">Register</a>
 </div>
 </body>
 </html>
