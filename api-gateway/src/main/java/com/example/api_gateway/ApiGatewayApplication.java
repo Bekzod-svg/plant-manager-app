@@ -19,7 +19,7 @@ public class ApiGatewayApplication {
 //	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 //		return builder.routes()
 //				.route("user-service", r -> r.path("/users/**")
-//						.uri("lb://user-management-service"))
+//						.uri("lb://user-service"))
 //				.route("installation-service", r -> r.path("/installations/**")
 //						.uri("lb://hydrogen-installation-service"))
 //				.route("monitoring-service", r -> r.path("/monitoring/**")
