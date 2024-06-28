@@ -14,7 +14,6 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -29,6 +28,8 @@ public class UserService {
             user.setUsername(userDetails.getUsername());
             user.setEmail(userDetails.getEmail());
             user.setPassword(userDetails.getPassword());
+            user.setName(userDetails.getName());
+            user.setSurname(userDetails.getSurname());
             return userRepository.save(user);
         }
         return null;

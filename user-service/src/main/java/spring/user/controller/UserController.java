@@ -13,16 +13,16 @@ import spring.user.service.UserService;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/user-service")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/all")
-    public List<User> getAllUsers(HttpServletRequest request) {
-        return userService.getAllUsers();
+    @GetMapping()
+    public ResponseEntity<List<User>> getAllUsers(HttpServletRequest request) {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/actual-user")
