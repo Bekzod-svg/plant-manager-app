@@ -13,5 +13,5 @@ import lombok.Setter;
 public class InstallationRequest {
     private StatusType status;
     private Location location;
-    private User owner;
+    private Long userId;
 }

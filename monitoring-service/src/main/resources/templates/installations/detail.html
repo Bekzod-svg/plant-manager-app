@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Installation Detail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      margin: 20px 0;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<h1>Installation Detail</h1>
+<div>
+  <p><strong>ID:</strong> <span th:text="${installation.id}"></span></p>
+  <p><strong>Status:</strong> <span th:text="${installation.status}"></span></p>
+  <p><strong>Location:</strong>
+    Latitude: <span th:text="${installation.location.latitude}"></span>,
+    Longitude: <span th:text="${installation.location.longitude}"></span>
+  </p>
+  <p><strong>Owner:</strong> <span th:text="${installation.owner.name} + ' ' + ${installation.owner.surname}"></span></p>
+</div>
+<a th:href="@{/installations}">Back to list</a>
+</body>
+</html>

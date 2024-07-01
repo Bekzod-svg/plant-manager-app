@@ -81,6 +81,6 @@ public class MonitoringController {
         }
         redirectAttributes.addFlashAttribute("loginSuccessMessage", "Login successful");
         model.addAttribute("actualUser", user);
-        return "dashboard";
+        return "redirect:/installations";
     }
 }

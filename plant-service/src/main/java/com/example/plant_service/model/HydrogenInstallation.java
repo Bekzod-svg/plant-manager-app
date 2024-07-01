@@ -21,15 +21,22 @@ public class HydrogenInstallation {
     private StatusType status;
     @Embedded
     private Location location;
-    @OneToOne
+
+//    @OneToOne
+//    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
+//    private User owner;
+
+    @Column(name = "userId")
+    private Long userId;
+    @Transient
     private User owner;
     @ElementCollection
     private List<HistoricalDate> historicalDates;
 
-    public HydrogenInstallation(StatusType status, Location location, User owner){
+    public HydrogenInstallation(StatusType status, Location location, Long userId){
         this.status = status;
         this.location = location;
-        this.owner = owner;
+        this.userId = userId;
         this.historicalDates = new ArrayList<>();
     }
 

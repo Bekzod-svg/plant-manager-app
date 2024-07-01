@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>New Installation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      margin: 20px 0;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<h1>New Installation</h1>
+<form th:action="@{/installations}" method="post">
+  <label for="latitude">Latitude:</label>
+  <input type="text" id="latitude" name="location.latitude"/>
+  <label for="longitude">Longitude:</label>
+  <input type="text" id="longitude" name="location.longitude"/>
+  <label for="userId">Owner ID:</label>
+  <input type="text" id="userId" name="userId"/>
+  <label for="status">Status:</label>
+  <select id="status" name="status">
+    <option value="ACTIVE">Active</option>
+    <option value="INACTIVE">Inactive</option>
+    <option value="PENDING">Pending</option>
+  </select>
+  <button type="submit">Create</button>
+</form>
+<a href="/installations">Back to list</a>
+</body>
+</html>
