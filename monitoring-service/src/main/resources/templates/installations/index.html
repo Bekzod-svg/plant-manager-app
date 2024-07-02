@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Hydrogen Installations</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      color: #333;
+    }
+    form {
+      margin: 20px 0;
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<h1>Hydrogen Installations</h1>
+<form action="#" th:action="@{/installations/search}" method="get">
+  <input type="text" name="query" placeholder="Search..."/>
+  <button type="submit">Search</button>
+</form>
+<a href="/installations/new">Add New Installation</a>
+<table>
+  <thead>
+  <tr>
+    <th><a th:href="@{/installations?sort=status}">Status</a></th>
+    <th><a th:href="@{/installations?sort=location}">Location</a></th>
+    <th><a th:href="@{/installations?sort=owner}">Owner</a></th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="installation : ${installations}">
+    <td th:text="${installation.status}"></td>
+    <td th:text="${installation.location.latitude} + ', ' + ${installation.location.longitude}"></td>
+    <td th:text="${installation.owner != null ? installation.owner.name : 'N/A'}"></td>
+    <td>
+      <a th:href="@{/installations/{id}/edit(id=${installation.id})}">Edit</a>
+      <form th:action="@{/installations/{id}/delete(id=${installation.id})}" method="post" style="display:inline;">
+        <input type="hidden" name="_method" value="delete"/>
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div>
+  <span th:text="'Page ' + ${currentPage} + ' of ' + ${totalPages}"></span>
+  <div th:if="${currentPage > 1}">
+    <a th:href="@{/installations(page=${currentPage - 1})}">Previous</a>
+  </div>
+  <div th:if="${currentPage < totalPages}">
+    <a th:href="@{/installations(page=${currentPage + 1})}">Next</a>
+  </div>
+</div>
+</body>
+</html>

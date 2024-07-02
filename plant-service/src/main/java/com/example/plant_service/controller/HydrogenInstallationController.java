@@ -22,8 +22,12 @@ public class HydrogenInstallationController {
     private final HydrogenInstallationService plantService;
 
     @GetMapping
-    public List<HydrogenInstallation> getAllInstallations(){
-        return plantService.getAllInstallations();
+    public List<HydrogenInstallation> getAllInstallations(@RequestParam(name = "sort", required = false) String sortField){
+        if(sortField != null){
+            return plantService.getAllInstallationsSorted(sortField);
+        }else {
+            return plantService.getAllInstallations();
+        }
     }
 
     @GetMapping("/{id}")
@@ -33,13 +37,13 @@ public class HydrogenInstallationController {
 
     @PostMapping
     public HydrogenInstallation createInstallation(@RequestBody InstallationRequest request){
-        return plantService.createInstallation(request.getStatus(), request.getLocation(), request.getOwner());
+        return plantService.createInstallation(request.getStatus(), request.getLocation(), request.getUserId());
     }
 
 
     @PutMapping("/{id}/user")
-    public HydrogenInstallation assignUserToInstallation(@PathVariable Long id, @RequestBody User owner){
-        return plantService.assignUserToInstallation(id, owner);
+    public HydrogenInstallation assignUserToInstallation(@PathVariable Long id, @RequestBody Long userId){
+        return plantService.assignUserToInstallation(id, userId);
     }
 
     @PutMapping("/{id}")
@@ -50,5 +54,19 @@ public class HydrogenInstallationController {
     @DeleteMapping("/{id}")
     public void deleteInstallation(@PathVariable Long id){
         plantService.deleteInstallation(id);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<HydrogenInstallation> getInstallationByUserId(@PathVariable Long userId){
+        HydrogenInstallation installation = plantService.getInstallationByUserId(userId);
+        if (installation == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(installation);
+    }
+
+    @GetMapping("/search")
+    public List<HydrogenInstallation> searchInstallations(@RequestParam String query){
+        return plantService.searchInstallations(query);
     }
 }
