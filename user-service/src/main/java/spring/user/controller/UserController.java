@@ -27,12 +27,12 @@ public class UserController {
     }
 
     @GetMapping("/actual-user")
-    public User getActualUser(HttpServletRequest request) {
+    public ResponseEntity<User> getActualUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if(session == null) {
             return null;
         }
-        return (User) session.getAttribute("user");
+        return ResponseEntity.ok((User) session.getAttribute("user"));
     }
 
     @GetMapping("/{id}")
@@ -67,7 +67,6 @@ public class UserController {
                                       HttpServletRequest request) {
         User foundUser = userService.findFirstByUsername(username);
         if (foundUser != null && foundUser.getPassword().equals(password)) {
-            log.error(foundUser.getUsername());
             HttpSession session = request.getSession();
             session.setAttribute("user", foundUser);
             userService.assignEventToUser(foundUser, new Event(EventType.LOG_IN, new Date()));
