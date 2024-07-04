@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <h1>Register</h1>
-    <form th:action="@{/ui/register}" th:object="${userForm}" method="post">
+    <form th:action="@{/register}" th:object="${userForm}" method="post">
         <div>
             <label for="username">Username:</label>
             <input type="text" id="username" th:field="*{username}" />
@@ -36,7 +36,7 @@
             <button type="submit">Register</button>
         </div>
     </form>
-    <a class="register-link" href="/ui">Already have an account? Login</a>
+    <a class="register-link" href="/">Already have an account? Login</a>
 </div>
 </body>
 </html>

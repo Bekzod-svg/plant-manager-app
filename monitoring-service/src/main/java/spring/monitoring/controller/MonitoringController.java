@@ -22,7 +22,6 @@ import java.util.Objects;
 
 @Controller
 @SessionAttributes("actualUser")
-@RequestMapping("/ui")
 @Slf4j
 public class MonitoringController {
 
@@ -106,18 +105,5 @@ public class MonitoringController {
         } catch (Exception ex) {
             return "home";
         }
-    }
-
-    @GetMapping("/indexInstallationPage")
-    public HydrogenInstallation[] indexInstallationPage(Model model) {
-
-            HydrogenInstallation[] installations = webClient.get()
-                    .uri("http://plant-service/api/v1/installations")
-                    .retrieve()
-                    .bodyToMono(HydrogenInstallation[].class)
-                    .block();
-
-            model.addAttribute("installations", installations);
-            return installations;
     }
 }
