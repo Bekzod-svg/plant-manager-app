@@ -85,6 +85,16 @@ public class UserController {
         }
         return ResponseEntity.ok("Logout successful");
     }
+
+    @PostMapping("/event")
+    public ResponseEntity<Boolean> assignEventToUser(@RequestBody Event event, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return null;
+        }
+        return ResponseEntity.ok(userService.assignEventToUser((User) session.getAttribute("user"), event));
+    }
+
     @PostMapping("/is-logged-in")
     public ResponseEntity<Boolean> isLoggedIn(HttpServletRequest request) {
         HttpSession session = request.getSession(false);

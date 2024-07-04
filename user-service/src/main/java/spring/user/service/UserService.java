@@ -46,8 +46,9 @@ public class UserService {
         return userRepository.findFirstByUsername(username);
     }
 
-    public void assignEventToUser(User foundUser, Event event) {
+    public boolean assignEventToUser(User foundUser, Event event) {
         foundUser.getEvents().add(event);
         userRepository.save(foundUser);
+        return true;
     }
 }
