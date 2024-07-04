@@ -11,6 +11,6 @@ public class UserServiceClient {
     private final RestTemplate restTemplate;
 
     public User getUserById(Long id){
-        return restTemplate.getForObject("http://localhost:8085/user-service/" + id, User.class);
+        return restTemplate.getForObject("http://localhost:8085/api/v1/users/" + id, User.class);
     }
 }
