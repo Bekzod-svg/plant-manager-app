@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
+
 @Entity
 @Table(name = "\"user\"")
 @Getter
@@ -20,4 +23,6 @@ public class User {
     private String email;
     private String name;
     private String surname;
+    @ElementCollection
+    private List<Event> events;
 }

@@ -4,13 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import spring.user.entity.Event;
+import spring.user.entity.EventType;
 import spring.user.entity.User;
 import spring.user.service.UserService;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -43,12 +44,14 @@ public class UserController {
     @PostMapping
     public ResponseEntity<User> registerUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
+        userService.assignEventToUser(createdUser, new Event(EventType.CREATED, new Date()));
         return ResponseEntity.ok(createdUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails, HttpServletRequest request) {
-        User updatedUser = userService.updateUser(id, userDetails);
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user, HttpServletRequest request) {
+        User updatedUser = userService.updateUser(id, user);
+        userService.assignEventToUser(updatedUser, new Event(EventType.UPDATED, new Date()));
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -67,6 +70,7 @@ public class UserController {
             log.error(foundUser.getUsername());
             HttpSession session = request.getSession();
             session.setAttribute("user", foundUser);
+            userService.assignEventToUser(foundUser, new Event(EventType.LOG_IN, new Date()));
             return ResponseEntity.ok(foundUser);
         }
         return ResponseEntity.status(401).body(null);
@@ -76,6 +80,7 @@ public class UserController {
     public ResponseEntity<String> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
+            userService.assignEventToUser((User) session.getAttribute("user"), new Event(EventType.LOG_OUT, new Date()));
             session.invalidate();
         }
         return ResponseEntity.ok("Logout successful");

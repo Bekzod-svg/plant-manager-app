@@ -2,9 +2,11 @@ package spring.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import spring.user.entity.Event;
 import spring.user.entity.User;
 import spring.user.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        user.setEvents(new ArrayList<>());
         return userRepository.save(user);
     }
 
@@ -41,5 +44,10 @@ public class UserService {
 
     public User findFirstByUsername(String username) {
         return userRepository.findFirstByUsername(username);
+    }
+
+    public void assignEventToUser(User foundUser, Event event) {
+        foundUser.getEvents().add(event);
+        userRepository.save(foundUser);
     }
 }
