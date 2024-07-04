@@ -84,6 +84,33 @@ public class MonitoringController {
         }
     }
 
+    ///
+//    @PostMapping("/login")
+//    public String login(@RequestParam("username") String username,
+//                        @RequestParam("password") String password, RedirectAttributes redirectAttributes, Model model) {
+//        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+//
+//        // Set username and password
+//        formData.add("username", username);
+//        formData.add("password", password);
+//
+//        User user = webClient.post()
+//                .uri("http://user-service/api/v1/users/login",
+//                        uriBuilder -> uriBuilder
+//                                .queryParams(formData).build())
+//                .retrieve()
+//                .bodyToMono(User.class)
+//                .block();
+//        if(user == null) {
+//            return "redirect:/loginPage";
+//        }
+//        redirectAttributes.addFlashAttribute("loginSuccessMessage", "Login successful");
+//        model.addAttribute("actualUser", user);
+//        return "redirect:/installations";
+//    }
+
+
+
     @GetMapping("/homepage")
     public String homepage(Model model) {
         return "home";
