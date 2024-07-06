@@ -75,17 +75,20 @@ public class HydrogenInstallationService {
         HydrogenInstallation installation = plantRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Installation not found")
         );
-        if(request.getStatus() != null){
+        boolean isChanged = false;
+        if(request.getStatus() != null && !request.getStatus().equals(installation.getStatus())){
             installation.setStatus(request.getStatus());
             HistoricalDate historicalDate = new HistoricalDate(HistoricalDateType.STATUS_CHANGE, new Date());
             installation.getHistoricalDates().add(historicalDate);
+            isChanged = true;
         }
-        if(request.getLocation() != null){
+        if(request.getLocation() != null && !request.getLocation().equals(installation.getLocation())){
             installation.setLocation(request.getLocation());
             HistoricalDate historicalDate = new HistoricalDate(HistoricalDateType.LOCATION_CHANGE, new Date());
             installation.getHistoricalDates().add(historicalDate);
+            isChanged = true;
         }
-        if(request.getUserId() != null){
+        if(request.getUserId() != null && !request.getUserId().equals(installation.getUserId())){
 //            User owner = userRepository.findById(request.getOwner().getId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
             User owner = userServiceClient.getUserById(request.getUserId());
 
@@ -99,6 +102,7 @@ public class HydrogenInstallationService {
                 installation.setOwner(owner);
                 HistoricalDate historicalDate = new HistoricalDate(HistoricalDateType.USER_CHANGE, new Date());
                 installation.getHistoricalDates().add(historicalDate);
+                isChanged = true;
             }else {
                 throw new EntityNotFoundException("User with id " + request.getUserId() + " not found");
             }
@@ -109,7 +113,7 @@ public class HydrogenInstallationService {
 //            installation.setHistoricalDates(request.getHistoricalDates());
 //        }
 
-        if(installation != null){
+        if(isChanged){
             return ResponseEntity.ok(plantRepository.save(installation));
         }else {
             return ResponseEntity.notFound().build();
