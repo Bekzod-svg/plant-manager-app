@@ -88,6 +88,12 @@ public class HydrogenInstallationService {
         if(request.getUserId() != null){
 //            User owner = userRepository.findById(request.getOwner().getId()).orElseThrow(() -> new EntityNotFoundException("User not found"));
             User owner = userServiceClient.getUserById(request.getUserId());
+
+            Optional<HydrogenInstallation> plant = plantRepository.findByUserId(request.getUserId());
+            if(plant.isPresent() && plant.get().getId() != installation.getId()){
+                throw new IllegalArgumentException("User already has an installation");
+            }
+
             if(owner != null){
                 installation.setUserId(request.getUserId());
                 installation.setOwner(owner);
