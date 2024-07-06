@@ -58,16 +58,40 @@
   </style>
 </head>
 <body>
-<h1>Installation Detail</h1>
-<div>
-  <p><strong>ID:</strong> <span th:text="${installation.id}"></span></p>
-  <p><strong>Status:</strong> <span th:text="${installation.status}"></span></p>
-  <p><strong>Location:</strong>
-    Latitude: <span th:text="${installation.location.latitude}"></span>,
-    Longitude: <span th:text="${installation.location.longitude}"></span>
-  </p>
-  <p><strong>Owner:</strong> <span th:text="${installation.owner.name} + ' ' + ${installation.owner.surname}"></span></p>
-</div>
-<a th:href="@{/installations}">Back to list</a>
+  <h1>Installation Detail</h1>
+  <!--<div>-->
+  <!--  <p><strong>ID:</strong> <span th:text="${installation.id}"></span></p>-->
+  <!--  <p><strong>Status:</strong> <span th:text="${installation.status}"></span></p>-->
+  <!--  <p><strong>Location:</strong>-->
+  <!--    Latitude: <span th:text="${installation.location.latitude}"></span>,-->
+  <!--    Longitude: <span th:text="${installation.location.longitude}"></span>-->
+  <!--  </p>-->
+  <!--  <p><strong>Owner:</strong> <span th:text="${installation.owner.name} + ' ' + ${installation.owner.surname}"></span></p>-->
+  <!--</div>-->
+
+  <div>
+    <p>ID: <span th:text="${installation.id != null ? installation.id : 'N/A'}"></span></p>
+    <p>Status: <span th:text="${installation.status != null ? installation.status : 'N/A'}"></span></p>
+    <p>Location: <span th:text="${installation.location.latitude != null ? installation.location.latitude : 'N/A'} + ', ' + ${installation.location.longitude != null ? installation.location.longitude : 'N/A'}"></span></p>
+    <p>Owner: <span th:text="${installation.owner != null ? installation.owner.name : 'N/A'}"></span></p>
+    <!-- Add more fields as necessary -->
+  </div>
+
+  <h2>Historical Dates</h2>
+  <div >
+    <ul>
+      <li th:each="date : ${installation.historicalDates != null ? installation.historicalDates : 'N/A'}">
+        <!-- Displaying type and timestamp from HistoricalDate -->
+        <p>Type: <span th:text="${date.type != null ? date.type : 'N/A'}"></span></p>
+        <p>Timestamp: <span th:text="${#dates.format(date.timestamp, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+      </li>
+    </ul>
+  </div>
+
+  <div th:if="${installation == null}">
+    <p>Installation not found.</p>
+  </div>
+
+  <a th:href="@{/installations}">Back to list</a>
 </body>
 </html>
