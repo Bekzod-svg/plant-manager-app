@@ -91,6 +91,9 @@
           maxZoom: 19,
           attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       }).addTo(map);
+
+      var marker = L.marker([installationLatitude, installationLongitude]).addTo(map);
+      marker.bindPopup("Latitude: " + installationLatitude + ", Longitude: " + installationLongitude).openPopup();
     </script>
   </div>
 
