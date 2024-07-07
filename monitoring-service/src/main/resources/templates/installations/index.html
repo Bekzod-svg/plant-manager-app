@@ -1,31 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-  <title>Login</title>
-  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
-</head>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/homepage">Monitoring</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="/homepage">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/installations">Plants</a>
-      </li>
-    </ul>
-    <div class="form-inline my-2 my-lg-0">
-      <a class="btn btn-outline-success my-2 my-sm-0" href="/logout">Logout</a>
-    </div>
-  </div>
-</nav>
-<head>
   <title>Hydrogen Installations</title>
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -55,9 +32,42 @@
     button:hover {
       background-color: #45a049;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
   </style>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/homepage">Monitoring</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/homepage">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/installations">Plants</a>
+      </li>
+    </ul>
+    <div class="form-inline my-2 my-lg-0">
+      <a class="btn btn-outline-success my-2 my-sm-0" href="/logout">Logout</a>
+    </div>
+  </div>
+</nav>
+
 <h1>Hydrogen Installations</h1>
 <form action="#" th:action="@{/installations/search}" method="get">
   <input type="text" name="query" placeholder="Search..."/>
@@ -84,6 +94,7 @@
         <input type="hidden" name="_method" value="delete"/>
         <button type="submit">Delete</button>
       </form>
+      <a th:href="@{/installations/{id}(id=${installation.id})}">View Details</a>
     </td>
   </tr>
   </tbody>

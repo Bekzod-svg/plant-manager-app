@@ -10,17 +10,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import spring.monitoring.dto.InstallationRequest;
 import spring.monitoring.entity.HydrogenInstallation;
 import spring.monitoring.service.InstallationService;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/installations")
 @RequiredArgsConstructor
 public class InstalltionServiceController {
     private final InstallationService plantService;
+    private static final Logger logger = LoggerFactory.getLogger(InstalltionServiceController.class);
+
 
 
     @GetMapping
@@ -40,10 +45,26 @@ public class InstalltionServiceController {
         return "installations/index";
     }
 
+//    @GetMapping("/{id}")
+//    public String getInstallation(@PathVariable Long id, Model model){
+//        plantService.getInstallation(id)
+//                .doOnSuccess(installation -> model.addAttribute("installation", installation));
+//        return "installations/detail";
+//    }
+
     @GetMapping("/{id}")
     public String getInstallation(@PathVariable Long id, Model model){
-        plantService.getInstallation(id)
-                .doOnSuccess(installation -> model.addAttribute("installation", installation));
+        Mono<HydrogenInstallation> plantMono = plantService.getInstallation(id);
+        HydrogenInstallation plant = plantMono.block();
+        if (plant != null) {
+            logger.info("Fetched Installation: {}", plant); // Log to console
+            model.addAttribute("installation", plant);
+        } else {
+            logger.info("Installation not found for ID: {}", id); // Log to console if not found
+            // Handle the case where the installation is not found
+            return "redirect:/installations"; // Redirect to list or an error page
+        }
+
         return "installations/detail";
     }
 
